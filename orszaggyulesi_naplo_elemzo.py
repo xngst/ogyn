@@ -5,8 +5,8 @@ from pathlib import Path
 import hunparl as hp
 import sqlite3
 
-db_dir = Path("/home/xn/Script/Streamlit/text")
-root_dir = Path("/home/xn/Script/Streamlit")
+db_dir = Path("/app/text")
+root_dir = Path("/app")
 con = sqlite3.connect(db_dir/"ogyn.db")
 cur = con.cursor()
 
