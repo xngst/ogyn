@@ -12,18 +12,10 @@ Visszaadja az adott ciklusban közzétett
 legutolsó parlementi napló számát
 """
 
-import http.client
 import re
 import requests
-from bs4 import BeautifulSoup
 from io import StringIO
 from pathlib import Path
-from pdfminer.converter import TextConverter
-from pdfminer.layout import LAParams
-from pdfminer.pdfinterp import PDFResourceManager
-from pdfminer.pdfinterp import PDFPageInterpreter
-from pdfminer.pdfpage import PDFPage
-from requests.packages import urllib3
 from urllib import parse
 
 urllib3.disable_warnings()
