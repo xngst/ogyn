@@ -5,8 +5,8 @@ from pathlib import Path
 import hunparl as hp
 import sqlite3
 
-db_dir = Path("/app/text")
-root_dir = Path("/app")
+db_dir = Path("/home/xn/Script/Streamlit/git/ogyn dev/text")
+root_dir = Path("/home/xn/Script/Streamlit/git/ogyn dev")
 con = sqlite3.connect(db_dir/"ogyn.db")
 cur = con.cursor()
 
@@ -39,6 +39,11 @@ with tab1:
 		cleaned = hp.ogy_n_tisztazo(full_text)
 		torzs_szoveg = hp.torzs_szoveg(cleaned)
 		torveny_javaslat_lista = hp.torveny_javaslat_lista(cleaned)
+		
+		napirend_lista = hp.vita_lista(cleaned)
+		vita_szoveg = hp.vita_szoveg(cleaned)
+		napirendi_szotar = hp.napirendi_szotar(napirend_lista,vita_szoveg)
+		
 		kepviselo_lista = hp.kepviselo_lista(cleaned)
 		kepviseloi_felszolalas_szotar = hp.kepviseloi_felszolalas_szotar(cleaned,kepviselo_lista)
 		
@@ -62,8 +67,15 @@ with tab1:
 		if hatarozati_javaslat_lista:
 			with st.expander("Határozati javaslatok"):
 				for hatarozat in hatarozati_javaslat_lista:
-					st.write(hatarozat)				
+					st.write(hatarozat)	
 		
+		st.divider()	
+		st.write("Napirendi pontok:")
+			
+		for i, napirend in enumerate(napirend_lista):
+			with st.expander(f"{napirend}"):
+				st.write(napirendi_szotar[napirend])
+					
 		with st.expander("Bevezető szöveg"):
 			st.write(bevezeto.replace(".",""))
 		

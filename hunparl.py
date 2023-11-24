@@ -99,6 +99,44 @@ def hatarozati_javaslat_lista(text: str)->list:
     proposal_pattern = re.compile(r"H/\d+")
     proposal_list = sorted(re.findall(proposal_pattern, text))
     return proposal_list
+    
+def vita_lista(text):
+    vita_pat = re.compile("[^.]* soron következik [^.]*\.", re.IGNORECASE)
+    text = re.sub(r"(\d{4})\.", "", text)
+    text = re.sub(r"([IVXLCDM]+)\.", "", text)
+    matches = re.findall(vita_pat, text)
+    cleaned_list = []
+    for m in matches:
+        m = m.replace("Tisztelt Országgyűlés!","")
+        m = m.replace("Tisztelt Ház!","")
+        m = m.replace("Soron következik ","")
+        m = m.replace("Most soron következik ","")
+        m = m.replace("ma kezdődő ülésünk napirendjének megállapítása.","")
+        m = m.replace("Elnök:","")
+        m = m.replace(" a lezárásig.","")
+        m = m.replace("a  lezárásig.","")
+        m = m.replace("„","")
+        m = m.replace(".","")
+        m = m.strip()
+        m = m.capitalize()
+        m = m+"."
+        cleaned_list.append(m)
+        
+    return cleaned_list 
+    
+def vita_szoveg(text):
+    vita_pat = re.compile("[^.]* soron következik [^.]*\.", re.IGNORECASE)
+    matches = re.findall(vita_pat, text)
+    vita_blokk = []
+    for i in range(len(matches)):
+        try:
+            vita_blokk.append(text[text.index(matches[i]):text.index(matches[i+1])])
+        except IndexError as ie:
+            vita_blokk.append(text[text.index(matches[i]):])
+    return vita_blokk  
+    
+def napirendi_szotar(napirend,vita_szovegek):
+    return dict(zip(napirend,vita_szovegek))         
 
 def kepviselo_lista(text: str)->list:
     mp_name_pattern = re.compile(r"(\b[A-Z.ÁÍÉÓÖŐÚÜŰ-]+)"\
