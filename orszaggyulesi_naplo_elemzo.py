@@ -145,10 +145,10 @@ with tab2:
 	text_input = st.text_input("Keresés az egész adatbázisban")
     
 	if text_input:
-		st.write(f"{len(text)} találat a {text_input} szóra")
 		if not substring:
 			text_input = " " + text_input + " "
 		df = hp.search_full_db(text,text_input)
+		st.markdown(f"{df['találat'].sum()} találat a **'{text_input}'** szóra")
 		df.set_index("ülésnap",drop=True,inplace=True)
 		st.bar_chart(df[["találat"]])
 		st.dataframe(df)
