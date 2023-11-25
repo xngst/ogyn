@@ -4,14 +4,19 @@ import sqlite3
 from pathlib import Path
 import hunparl as hp
 import sqlite3
+import pandas as pd
 
-db_dir = Path("/app/text")
+#db_dir = Path("/home/xn/Script/Streamlit/git/ogyn dev/text")
+#root_dir = Path("/home/xn/Script/Streamlit/git/ogyn dev")
+
 root_dir = Path("/app")
+db_dir = Path(root_dir/"text")
+
 con = sqlite3.connect(db_dir/"ogyn.db")
 cur = con.cursor()
 
 st.header("Országgyűlési napló elemző")
-tab1, tab2 = st.tabs(["Elemző","Ismertető"])
+tab1, tab2, tab3 = st.tabs(["Elemző","Kereső","Ismertető"])
 
 with tab1:
 
@@ -117,8 +122,39 @@ with tab1:
 				st.write(f"{index+1}.:")
 				for elem in reakcio:
 					st.write(elem)
+
+with tab2:
+	con = sqlite3.connect(db_dir/"ogyn.db")
+	cur = con.cursor()
+	
+	min_date_q = cur.execute("SELECT date FROM ogyn WHERE id = (SELECT MIN(id) FROM ogyn)")
+	min_date = min_date_q.fetchall()
+	st.write(f"Legelső elérhető ülésnap az adatbázisban: {min_date[0][0]}")
+	
+	max_date_q = cur.execute("SELECT date FROM ogyn WHERE id = (SELECT MAX(id) FROM ogyn)")
+	max_date = max_date_q.fetchall()
+	st.write(f"Legutolsó elérhető ülésnap az adatbázisban: {max_date[0][0]}")	
+	
+	full_res = cur.execute("SELECT * FROM ogyn")
+	text = full_res.fetchall()
+	
+	text_input = None
+	
+	substring = st.toggle('Keresés részszavakban')
+
+	text_input = st.text_input("Keresés az egész adatbázisban")
+    
+	if text_input:
+		st.write(f"{len(text)} találat a {text_input} szóra")
+		if not substring:
+			text_input = " " + text_input + " "
+		df = hp.search_full_db(text,text_input)
+		df.set_index("ülésnap",drop=True,inplace=True)
+		st.bar_chart(df[["találat"]])
+		st.dataframe(df)
+
 				
-with tab2:	
+with tab3:	
 	with open(root_dir/'ismerteto.txt','r') as f:
 		ismerteto = f.read()
 		st.write(ismerteto)

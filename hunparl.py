@@ -1,4 +1,5 @@
 import re
+import pandas as pd
 
 """
 oszággyűlési napló tisztazó modul
@@ -99,6 +100,22 @@ def hatarozati_javaslat_lista(text: str)->list:
     proposal_pattern = re.compile(r"H/\d+")
     proposal_list = sorted(re.findall(proposal_pattern, text))
     return proposal_list
+    
+def search_full_db(text, search_string):
+    ""
+
+    search_string = search_string.lower()
+    collector_df = pd.DataFrame()
+
+    for i in text:
+        result = i[3].lower().count(search_string)
+        row_df = pd.DataFrame([i[0],i[1], result]).T
+        collector_df = pd.concat([collector_df, row_df])
+
+    collector_df.columns = ["szám", "ülésnap", f"találat"]
+    collector_df.reset_index(drop=True, inplace=True)
+    
+    return collector_df    
     
 def vita_lista(text):
     vita_pat = re.compile("[^.]* soron következik [^.]*\.", re.IGNORECASE)
