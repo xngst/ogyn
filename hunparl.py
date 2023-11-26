@@ -63,7 +63,10 @@ def ules_datum(text: str)->str:
 def elnok_lista(text: str)->list:
     chairman_pattern = re.compile("Napló([\s\S]*?)elnöklete alatt")
     chairman_list = re.findall(chairman_pattern, text)
-    chairman_list = chairman_list[0].split("és")
+    try:
+	    chairman_list = chairman_list[0].split("és")
+	except IndexError:
+		pass
     chairman_list = [i.strip().replace("\n","") for i in chairman_list]
     return chairman_list
 
