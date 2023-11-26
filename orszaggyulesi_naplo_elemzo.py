@@ -10,7 +10,7 @@ import pandas as pd
 #root_dir = Path("/home/xn/Script/Streamlit/git/ogyn dev")
 
 root_dir = Path("/app")
-db_dir = Path(root_dir/"text")
+db_dir = Path(root_dir/"db")
 
 con = sqlite3.connect(db_dir/"ogyn.db")
 cur = con.cursor()
